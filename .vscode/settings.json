@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "java.h": "c",
+        "jvm_md.h": "c"
+    }
+}
