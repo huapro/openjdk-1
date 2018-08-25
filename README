@@ -40,7 +40,7 @@ Complete details are available in the file:
      http://hg.openjdk.java.net/jdk8/jdk8/raw-file/tip/README-builds.html
 
 
-
+ /*2018-08-20 15:38:18  Charles */
 openjdk 
 —— corba：不流行的多语言、分布式通讯接口 
 —— hotspot：Java 虚拟机 
@@ -51,4 +51,3 @@ openjdk
 —— —— share：与平台无关的实现 
 —— langtools：Java 语言工具 
 —— nashorn：JVM 上的 JavaScript 运行时
- /*2018-08-20 15:38:18  Charles */
