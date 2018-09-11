@@ -66,6 +66,9 @@ void GenMarkSweep::invoke_at_safepoint(int level, ReferenceProcessor* rp, bool c
   // hook up weak ref data so it can be used during Mark-Sweep
   assert(ref_processor() == NULL, "no stomping");
   assert(rp != NULL, "should be non-NULL");
+  　/*　接着看GenMarkSweep的invoke_at_safepoint()： 
+　　1.前面的实现都是进行一些gc前的初始化工作和统计工作 
+　　(1).设置引用处理器和引用处理策略为clear_all_softrefs*/
   _ref_processor = rp;
   rp->setup_policy(clear_all_softrefs);
 
@@ -80,35 +83,40 @@ void GenMarkSweep::invoke_at_safepoint(int level, ReferenceProcessor* rp, bool c
 
   // Increment the invocation count
   _total_invocations++;
-
+//(2).增加调用计数，并统计gc前的堆的使用大小
   // Capture heap size before collection for printing.
   size_t gch_prev_used = gch->used();
 
   // Capture used regions for each generation that will be
   // subject to collection, so that card table adjustments can
   // be made intelligently (see clear / invalidate further below).
+  //(3).保存当前内存代和更低的内存代、以及永久代的已使用区域
   gch->save_used_regions(level);
-
+//　(4).创建遍历栈
   allocate_stacks();
-
+//2.接下来就是MarkSweepCompact算法的实现了，算法的实现分为四个阶段： 
+//递归标记所有活跃对象 
   mark_sweep_phase1(level, clear_all_softrefs);
-
+//计算所有活跃对象在压缩后的偏移地址
   mark_sweep_phase2();
 
   // Don't add any more derived pointers during phase3
   COMPILER2_PRESENT(assert(DerivedPointerTable::is_active(), "Sanity"));
   COMPILER2_PRESENT(DerivedPointerTable::set_active(false));
-
+//更新对象的引用地址
   mark_sweep_phase3(level);
-
+  //移动所有活跃/存活对象到新的位置
   mark_sweep_phase4();
-
+/*　　3.在将对象标记入栈的时候，会将原MarkWord保存在_preserved_marks，MarkWord被设置为转发指针，
+当四个处理阶段结束后，恢复这些”废弃”对象的MarkWord，
+以防止下次GC时干扰标记，虽然没有真正“清空”死亡对象的内存空间，
+但由于对象引用将指向新的位置，原来的这些对象所占用内存空间将会被看作是空闲空间。 2018-09-11  14:22 Charles*/
   restore_marks();
-
+// 保存各内存代的mark指针为当前空闲分配指针
   // Set saved marks for allocation profiler (and other things? -- dld)
   // (Should this be in general part?)
   gch->save_marks();
-
+//4.一些gc后的处理工作，例如清空所有遍历栈、更新堆的一些使用信息和最近一次gc发生的时间等
   deallocate_stacks();
 
   // If compaction completely evacuated all generations younger than this
@@ -206,7 +214,7 @@ void GenMarkSweep::mark_sweep_phase1(int level,
 
   // Need new claim bits before marking starts.
   ClassLoaderDataGraph::clear_claimed_marks();
-
+//1.与新生代类似，标记根集对象。
   gch->gen_process_roots(level,
                          false, // Younger gens are not roots.
                          true,  // activate StrongRootsScope

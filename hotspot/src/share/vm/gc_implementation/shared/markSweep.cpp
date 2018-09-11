@@ -64,7 +64,7 @@ void MarkSweep::follow_class_loader(ClassLoaderData* cld) {
   MarkSweep::follow_cld_closure.do_cld(cld);
 }
 
-void MarkSweep::follow_stack() {
+void MarkSweep::follow_stack() {  
   do {
     while (!_marking_stack.is_empty()) {
       oop obj = _marking_stack.pop();

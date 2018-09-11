@@ -56,7 +56,7 @@ inline void MarkSweep::follow_klass(Klass* klass) {
   oop op = klass->klass_holder();
   MarkSweep::mark_and_push(&op);
 }
-
+//　不考虑压缩指针的解压，follow_root()实现如下：
 template <class T> inline void MarkSweep::follow_root(T* p) {
   assert(!Universe::heap()->is_in_reserved(p),
          "roots shouldn't be things within the heap");

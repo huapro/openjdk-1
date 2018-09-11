@@ -635,7 +635,7 @@ void OneContigSpaceCardGeneration::collect(bool   full,
 
   SerialOldTracer* gc_tracer = GenMarkSweep::gc_tracer();
   gc_tracer->report_gc_start(gch->gc_cause(), gc_timer->gc_start());
-
+//接着看GenMarkSweep的invoke_at_safepoint()：
   GenMarkSweep::invoke_at_safepoint(_level, ref_processor(), clear_all_soft_refs);
 
   gc_timer->register_gc_end();

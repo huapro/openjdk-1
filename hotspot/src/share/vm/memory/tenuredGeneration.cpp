@@ -148,12 +148,15 @@ bool TenuredGeneration::should_collect(bool  full,
   }
   return result;
 }
-
+/*年代TenuredGeneration所使用的垃圾回收算法是标记-压缩-清理算法。
+在回收阶段，将标记对象越过堆的空闲区移动到堆的另一端，所有被移动的对象的引用也会被更新指向新的位置。
+看起来像是把杂陈的箱子一股脑推到房间的一侧一样。*/
 void TenuredGeneration::collect(bool   full,
                                 bool   clear_all_soft_refs,
                                 size_t size,
                                 bool   is_tlab) {
   retire_alloc_buffers_before_full_gc();
+  //转而调用了父类OneContigSpaceCardGeneration的collect()：
   OneContigSpaceCardGeneration::collect(full, clear_all_soft_refs,
                                         size, is_tlab);
 }
