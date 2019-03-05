@@ -55,7 +55,7 @@ class CMSIsAliveClosure;
 
 class PSPromotionManager;
 class ParCompactionManager;
-
+// oopDesc--继承-->markOopDesc--方法monitor()-->ObjectMonitor-->enter、exit 获取、释放锁  2019-03-05  11:46 Charles
 class oopDesc {
   friend class VMStructs;
  private:
