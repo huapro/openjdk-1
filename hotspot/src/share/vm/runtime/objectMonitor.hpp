@@ -137,24 +137,31 @@ class ObjectMonitor {
 
   // initialize the monitor, exception the semaphore, all other fields
   // are simple integers or pointers
+  // ObjectMonitor类
+
+// 在HotSpot虚拟机中，最终采用ObjectMonitor类实现monitor。
+//每个线程都有两个ObjectMonitor对象列表，分别为free和used列表，如果当前free列表为空，线程将向全局global list请求分配ObjectMonitor。
+
+//ObjectMonitor对象中有两个队列：_WaitSet 和 _EntryList，用来保存ObjectWaiter对象列表；
+// openjdk\hotspot\src\share\vm\runtime\objectMonitor.hpp源码如下： 2019-03-05  11:59 Charles
   ObjectMonitor() {
-    _header       = NULL;
+    _header       = NULL;//markOop对象头
     _count        = 0;
-    _waiters      = 0,
-    _recursions   = 0;
-    _object       = NULL;
-    _owner        = NULL;
-    _WaitSet      = NULL;
+    _waiters      = 0,//等待线程数
+    _recursions   = 0;//重入次数
+    _object       = NULL;//监视器锁寄生的对象。锁不是平白出现的，而是寄托存储于对象中。
+    _owner        = NULL;//指向获得ObjectMonitor对象的线程或基础锁
+    _WaitSet      = NULL;//处于wait状态的线程，会被加入到wait set；
     _WaitSetLock  = 0 ;
     _Responsible  = NULL ;
     _succ         = NULL ;
     _cxq          = NULL ;
     FreeNext      = NULL ;
-    _EntryList    = NULL ;
+    _EntryList    = NULL ;//处于等待锁block状态的线程，会被加入到entry set；
     _SpinFreq     = 0 ;
     _SpinClock    = 0 ;
-    OwnerIsThread = 0 ;
-    _previous_owner_tid = 0;
+    OwnerIsThread = 0 ;// _owner is (Thread *) vs SP/BasicLock
+    _previous_owner_tid = 0;// 监视器前一个拥有者线程的ID
   }
 
   ~ObjectMonitor() {

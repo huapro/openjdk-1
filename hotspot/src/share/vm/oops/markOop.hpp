@@ -100,7 +100,9 @@
 class BasicLock;
 class ObjectMonitor;
 class JavaThread;
+// markOopDesc类
 
+// openjdk\hotspot\src\share\vm\oops\markOop.hpp下markOopDesc继承自oopDesc，并拓展了自己的方法monitor(), 2019-03-05  11:56 Charles
 class markOopDesc: public oopDesc {
  private:
   // Conversion
@@ -281,6 +283,8 @@ class markOopDesc: public oopDesc {
   bool has_monitor() const {
     return ((value() & monitor_value) != 0);
   }
+  //openjdk\hotspot\src\share\vm\oops\markOop.hpp下markOopDesc继承自oopDesc，并拓展了自己的方法monitor()  
+  //2019-03-05  11:57 Charles
   ObjectMonitor* monitor() const {
     assert(has_monitor(), "check");
     // Use xor instead of &~ to provide one extra tag-bit check.
