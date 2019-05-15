@@ -1964,7 +1964,7 @@ public class Check {
                 checkOverride(tree, t2, origin, m);
             }
         }
-
+// @overide 错误处理 2019-05-15  16:54 Charles
         if (m.attribute(syms.overrideType.tsym) != null && !isOverrider(m)) {
             DiagnosticPosition pos = tree.pos();
             for (JCAnnotation a : tree.getModifiers().annotations) {

@@ -42,6 +42,7 @@ import javax.annotation.processing.*;
  * This code and its internal interfaces are subject to change or
  * deletion without notice.</b>
  */
+//javac编译消息产生 2019-05-15  17:02 Charles
 public class JavacMessager implements Messager {
     Log log;
     JavacProcessingEnvironment processingEnv;
